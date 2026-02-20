@@ -100,7 +100,12 @@ const App = () => {
     )
     setFighters(updatedFighters);
 
-    const updatedMoney = x - fighter.price;
+
+    if (money > fighter.price) {
+      const updatedMoney = x - fighter.price;
+    } else {
+      "Not enough money"
+    }
     setMoney(updatedMoney)
   };
   
@@ -108,7 +113,7 @@ const App = () => {
   return (
   <>
     <h1>Zombie Fighers</h1>
-    <p>Money: {money}</p>
+    <p>Money: {updatedMoney}</p>
     <p>Team Strength: 0</p>
     <p>Team Agility: 0</p>
     <p>Team:</p>
