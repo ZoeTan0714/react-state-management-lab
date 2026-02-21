@@ -87,40 +87,63 @@ const zombieFighters = [
 
 const App = () => {
   const [team, setTeam] = useState ([])
-  const [fighters, setFighters] = useState ([zombieFighters])
+  const [fighters, setFighters] = useState (zombieFighters)
   const [money, setMoney] = useState(100)
   
   const handleAddFighter = (fighter) => {
-    //add new fighter to "Team" > update status 
-    setTeam([...team, fighter]);
+      setMoney ((previousMoney) => {
+        if (previousMoney >= fighter.price) {
+          //1. deduct money 
+           const remainingMoney = previousMoney - fighter.price;
+          
+          //2. add new fighter to "Team" > update status 
+          setTeam((previousTeam) => [...previousTeam, fighter]);
     
-    //keep if the id !== selected fighter ID > temp array (updatedFighers) > update status 
-    const updatedFighters = fighters.filter(
-      (y) => y.id !== fighter.id
-    )
-    setFighters(updatedFighters);
+          //3. remove fighter from the original list, and keep if the id !== selected fighter ID > temp array (updatedFighers) > update status 
+          setFighters(fighters.filter((y) => y.id !== fighter.id));
 
-
-    if (money > fighter.price) {
-      const updatedMoney = x - fighter.price;
-    } else {
-      "Not enough money"
-    }
-    setMoney(updatedMoney)
-  };
+          return remainingMoney;
+          
+      } else {
+        console.log("Not enough money");
+        return previousMoney
+      }
+      })
+    }; 
   
+  let teamDisplay;  
+  if (team.length === 0) {
+        teamDisplay = <p>Pick some team members</p>
+      } else {
+        teamDisplay = (
+        <section>
+          {team.map((fighter) => (
+          <ul key={fighter.id}>
+          <li>
+            <img src={fighter.img} alt={fighter.name}/>
+          </li>
+          <li>{fighter.name}</li>
+          <li>Price: {fighter.price}</li>
+          <li>Strength: {fighter.strength}</li>
+          <li>Agility: {fighter.agility}</li>
+        </ul>
+          ))}
+        </section> 
+        )
+      }
+
 
   return (
   <>
-    <h1>Zombie Fighers</h1>
-    <p>Money: {updatedMoney}</p>
+    <h1>Zombie Fighters</h1>
+    <p>Money: {money}</p>
     <p>Team Strength: 0</p>
     <p>Team Agility: 0</p>
-    <p>Team:</p>
+    <p>Team: </p>
+    {teamDisplay}    
     <p>Fighters</p>
-
     <section>
-      {zombieFighters.map ((fighter) => (
+      {fighters.map ((fighter) => (
         <ul key={fighter.id}>
           <li>
             <img src={fighter.img} alt={fighter.name}/>
@@ -135,6 +158,5 @@ const App = () => {
       </section>
   </> 
   );
- }; 
-
+  };
 export default App
