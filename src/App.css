@@ -1,16 +1,44 @@
+body {
+  background-color: black;
+}
+
 #root {
   margin: 16px;
 }
 
-ul {
+.fighters-container {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;   
+  flex-wrap: wrap;          
+  gap: 20px;                 
+  margin-top: 20px;
 }
 
-li {
-  list-style: none;
+.fighter-card {
+  display: block;
   margin: 8px;
   padding: 8px;
   border: whitesmoke 3px solid;
   border-radius: 8px;
+  color: white;
+  text-align: center;
+}
+
+.fighter-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* justify-content: left; */
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+h1, h2 {
+  font-weight: bold;
+  color: white;
+}
+
+p {
+  color: white;
 }

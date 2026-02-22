@@ -1,5 +1,6 @@
 // src/App.jsx
-import { useState } from "react";
+import { useReducer, useState } from "react";
+import './App.css';
 
 const zombieFighters = [
   {
@@ -91,69 +92,97 @@ const App = () => {
   const [money, setMoney] = useState(100)
   
   const handleAddFighter = (fighter) => {
-      setMoney ((previousMoney) => {
-        if (previousMoney >= fighter.price) {
+      if (money < fighter.price) {
+          console.log("not enough money")} else {
           //1. deduct money 
-           const remainingMoney = previousMoney - fighter.price;
-          
+          setMoney(money-fighter.price)
+
           //2. add new fighter to "Team" > update status 
           setTeam((previousTeam) => [...previousTeam, fighter]);
     
           //3. remove fighter from the original list, and keep if the id !== selected fighter ID > temp array (updatedFighers) > update status 
-          setFighters(fighters.filter((y) => y.id !== fighter.id));
-
-          return remainingMoney;
-          
-      } else {
-        console.log("Not enough money");
-        return previousMoney
-      }
-      })
-    }; 
+          setFighters((previousFighters) => previousFighters.filter((y) => y.id !== fighter.id))
+          }
+      }; 
   
   let teamDisplay;  
   if (team.length === 0) {
         teamDisplay = <p>Pick some team members</p>
       } else {
         teamDisplay = (
-        <section>
-          {team.map((fighter) => (
-          <ul key={fighter.id}>
-          <li>
+        <section className="fighters-container">
+        
+          {team.map ((fighter) => (
+          <div className="fighter-card" key={fighter.id}>
             <img src={fighter.img} alt={fighter.name}/>
-          </li>
-          <li>{fighter.name}</li>
-          <li>Price: {fighter.price}</li>
-          <li>Strength: {fighter.strength}</li>
-          <li>Agility: {fighter.agility}</li>
-        </ul>
+        
+          <div className="fighter-info">
+            <span>{fighter.name}</span>
+            <span>Price: {fighter.price}</span>
+            <span>Strength: {fighter.strength}</span>
+            <span>Agility: {fighter.agility}</span>
+          </div>
+
+          <button onClick={() => handleRemoveFighter(fighter)}>Remove</button>
+          </div>
           ))}
         </section> 
         )
-      }
+      };
 
+
+
+
+
+
+      let strengthDisplay;
+      if (team.length === 0) { 
+        strengthDisplay = 0} else {
+        strengthDisplay= team.reduce((total, fighter) => {
+        return total + fighter.strength
+      },0)}
+
+      let strengthAgility;
+      if (team.length === 0) { 
+        strengthAgility = 0} else {
+        strengthAgility= team.reduce((total, fighter) => {
+        return total + fighter.agility
+      },0)}
+
+  const handleRemoveFighter = (fighter) => {
+          //1. add back money 
+          setMoney(money + fighter.price)
+
+          //2. remove fighter from the team 
+          setTeam(team.filter(y => y.id !== fighter.id));
+    
+          //3. add fighter to the original list 
+          setFighters((previousFighters) => [...previousFighters, fighter]);  
+        };
 
   return (
   <>
     <h1>Zombie Fighters</h1>
-    <p>Money: {money}</p>
-    <p>Team Strength: 0</p>
-    <p>Team Agility: 0</p>
-    <p>Team: </p>
+    <h2>Money: {money}</h2>
+    <h2>Team Strength: {strengthDisplay}</h2>
+    <h2>Team Agility: {strengthAgility}</h2>
+    <h2>Team: </h2>
     {teamDisplay}    
-    <p>Fighters</p>
-    <section>
+    <h2>Fighters</h2>
+    <section className="fighters-container">
       {fighters.map ((fighter) => (
-        <ul key={fighter.id}>
-          <li>
+        <div className="fighter-card" key={fighter.id}>
             <img src={fighter.img} alt={fighter.name}/>
-          </li>
-          <li>{fighter.name}</li>
-          <li>Price: {fighter.price}</li>
-          <li>Strength: {fighter.strength}</li>
-          <li>Agility: {fighter.agility}</li>
+        
+          <div className="fighter-info">
+            <span>{fighter.name}</span>
+            <span>Price: {fighter.price}</span>
+            <span>Strength: {fighter.strength}</span>
+            <span>Agility: {fighter.agility}</span>
+          </div>
+
           <button onClick={() => handleAddFighter(fighter)}>Add</button>
-        </ul>
+        </div>
       ))}
       </section>
   </> 
